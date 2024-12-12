@@ -31,7 +31,7 @@ func Unpack(s string) (string, error) {
 		if unicode.IsDigit(current) && unicode.IsDigit(next) {
 			return "", ErrInvalidString
 		}
-		// if current is digit
+		// if next is digit
 		if unicode.IsDigit(next) {
 			nextAsInt, _ := strconv.Atoi(string(next))
 			result.WriteString(strings.Repeat(string(current), nextAsInt))

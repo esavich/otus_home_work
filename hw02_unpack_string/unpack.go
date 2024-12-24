@@ -7,8 +7,10 @@ import (
 	"unicode"
 )
 
-var ErrInvalidString = errors.New("invalid string")
-var ErrStrToIntConversion = errors.New("conversion error")
+var (
+	ErrInvalidString      = errors.New("invalid string")
+	ErrStrToIntConversion = errors.New("conversion error")
+)
 
 func Unpack(s string) (string, error) {
 	runes := []rune(s)

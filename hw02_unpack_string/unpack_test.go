@@ -16,6 +16,14 @@ func TestUnpack(t *testing.T) {
 		{input: "abccd", expected: "abccd"},
 		{input: "", expected: ""},
 		{input: "aaa0b", expected: "aab"},
+		{input: "aaa0b0", expected: "aa"},
+		{input: "aaa1b0c1", expected: "aaac"},
+		{input: "э1т2о3", expected: "эттооо"},
+		{input: "русские8", expected: "русскиееееееее"},
+		{input: "d\n5abc", expected: "d\n\n\n\n\nabc"},
+		{input: "ф2\t2\n3", expected: "фф\t\t\n\n\n"},
+		// не знаю что тут написано, одно из первых по запросу иероглифы
+		{input: "我2叫3伊4拉5", expected: "我我叫叫叫伊伊伊伊拉拉拉拉拉"},
 		// uncomment if task with asterisk completed
 		// {input: `qwe\4\5`, expected: `qwe45`},
 		// {input: `qwe\45`, expected: `qwe44444`},
@@ -34,7 +42,7 @@ func TestUnpack(t *testing.T) {
 }
 
 func TestUnpackInvalidString(t *testing.T) {
-	invalidStrings := []string{"3abc", "45", "aaa10b"}
+	invalidStrings := []string{"3abc", "45", "aaa10b", "42", "12qwe21"}
 	for _, tc := range invalidStrings {
 		tc := tc
 		t.Run(tc, func(t *testing.T) {

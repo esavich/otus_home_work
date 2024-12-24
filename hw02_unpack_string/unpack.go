@@ -8,6 +8,7 @@ import (
 )
 
 var ErrInvalidString = errors.New("invalid string")
+var ErrStrToIntConversion = errors.New("conversion error")
 
 func Unpack(s string) (string, error) {
 	runes := []rune(s)
@@ -33,7 +34,10 @@ func Unpack(s string) (string, error) {
 		}
 		// if next is digit
 		if unicode.IsDigit(next) {
-			nextAsInt, _ := strconv.Atoi(string(next))
+			nextAsInt, err := strconv.Atoi(string(next))
+			if err != nil {
+				return "", ErrStrToIntConversion
+			}
 			result.WriteString(strings.Repeat(string(current), nextAsInt))
 			continue
 		}

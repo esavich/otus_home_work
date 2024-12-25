@@ -56,8 +56,6 @@ func Top10(text string) []string {
 		}
 		return wordsWithFreq[i].freq > wordsWithFreq[j].freq
 	})
-	fmt.Println(freq)
-	fmt.Println(wordsWithFreq)
 
 	res := make([]string, 0, 10)
 	for i := 0; i < 10; i++ {

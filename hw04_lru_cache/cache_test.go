@@ -76,6 +76,38 @@ func TestCache(t *testing.T) {
 		require.False(t, ok)
 		require.Nil(t, val)
 	})
+
+	t.Run("LRU logic", func(t *testing.T) {
+		c := NewCache(3)
+		c.Set("aaa", 100)
+		c.Set("bbb", 200)
+		c.Set("ccc", 300)
+
+		c.Get("aaa")      // aaa used
+		c.Set("bbb", 500) // bbb updated
+		// ccc not used, will be removed
+
+		c.Set("ddd", 400)
+
+		// aaa exists
+		val, ok := c.Get("aaa")
+		require.True(t, ok)
+		require.Equal(t, 100, val)
+
+		// bbb exists
+		val, ok = c.Get("bbb")
+		require.True(t, ok)
+		require.Equal(t, 500, val)
+		// ddd exists
+		val, ok = c.Get("ddd")
+		require.True(t, ok)
+		require.Equal(t, 400, val)
+
+		// ccc not exists
+		val, ok = c.Get("ccc")
+		require.False(t, ok)
+		require.Nil(t, val)
+	})
 }
 
 func TestCacheMultithreading(_ *testing.T) {

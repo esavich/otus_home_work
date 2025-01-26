@@ -12,9 +12,15 @@ type Task func() error
 
 // Run starts tasks in n goroutines and stops its work when receiving m errors from tasks.
 func Run(tasks []Task, n, m int) error {
+	// количество ошибок не может быть отрицательным и нулем
+	// работает и без этой проверки, но зачем вообще стартовать воркеры, если m <= 0
+	if m <= 0 {
+		return ErrErrorsLimitExceeded
+	}
+
 	wg := sync.WaitGroup{}
 	tasksCh := make(chan Task)
-	var errCount atomic.Uint64
+	var errCount atomic.Int64
 
 	defer func() {
 		close(tasksCh)
@@ -27,17 +33,16 @@ func Run(tasks []Task, n, m int) error {
 	}
 
 	for _, task := range tasks {
-		tasksCh <- task
-
-		if errCount.Load() >= uint64(m) {
+		if errCount.Load() >= int64(m) {
 			return ErrErrorsLimitExceeded
 		}
+		tasksCh <- task
 	}
 
 	return nil
 }
 
-func startWorker(wg *sync.WaitGroup, tasksCh <-chan Task, errCount *atomic.Uint64) {
+func startWorker(wg *sync.WaitGroup, tasksCh <-chan Task, errCount *atomic.Int64) {
 	defer wg.Done()
 
 	for t := range tasksCh {

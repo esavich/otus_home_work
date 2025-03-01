@@ -12,17 +12,17 @@ import (
 func RunCmd(cmd []string, env Environment) (returnCode int) {
 	// Place your code here.
 
-	command := exec.Command(cmd[0], cmd[1:]...)
+	command := exec.Command(cmd[0], cmd[1:]...) //nolint
 
 	command.Stdin = os.Stdin
 	command.Stdout = os.Stdout
 	command.Stderr = os.Stderr
 	currEnv := os.Environ()
 
-	// append current environment variables, without needed to remove
+	// append current environment variables, without marked to remove
 	for _, value := range currEnv {
-		valKey, _, _ := strings.Cut(value, "=")
-		if _, ok := env[valKey]; !ok || !env[valKey].NeedRemove {
+		envKey, _, _ := strings.Cut(value, "=")
+		if _, ok := env[envKey]; !ok || !env[envKey].NeedRemove {
 			command.Env = append(command.Env, value)
 		}
 	}

@@ -8,7 +8,6 @@ import (
 func main() {
 	// Place your code here.
 	args := os.Args
-	fmt.Println(args)
 
 	if len(args) < 3 {
 		fmt.Println("to few arguments")
@@ -19,13 +18,12 @@ func main() {
 	envDir := args[1]
 	cmd := args[2:]
 
-	fmt.Printf("envdir: %s, cmd and args %s\n", envDir, cmd)
-
 	env, err := ReadDir(envDir)
 	if err != nil {
-		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	fmt.Println(env)
+	returnCode := RunCmd(cmd, env)
+
+	os.Exit(returnCode)
 }

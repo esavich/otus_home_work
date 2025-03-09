@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -35,7 +36,7 @@ func ReadDir(dir string) (Environment, error) {
 			continue
 		}
 
-		fileContent, err := os.ReadFile(dir + "/" + fileName)
+		fileContent, err := os.ReadFile(filepath.Join(dir, fileName))
 		if err != nil {
 			return nil, fmt.Errorf("error opening file: %w", err)
 		}

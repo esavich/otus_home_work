@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -36,11 +38,17 @@ func ReadDir(dir string) (Environment, error) {
 			continue
 		}
 
-		fileContent, err := os.ReadFile(filepath.Join(dir, fileName))
+		file, err := os.Open(filepath.Join(dir, fileName))
 		if err != nil {
 			return nil, fmt.Errorf("error opening file: %w", err)
 		}
-		firstLine, _, _ := strings.Cut(string(fileContent), "\n")
+		reader := bufio.NewReader(file)
+
+		firstLine, err := reader.ReadString('\n')
+		if err != nil && err != io.EOF {
+			return nil, fmt.Errorf("error reading file: %w", err)
+		}
+		firstLine = strings.TrimSuffix(firstLine, "\n")
 		firstLine = strings.TrimRight(firstLine, "\t ")
 		firstLine = strings.ReplaceAll(firstLine, "\x00", "\n")
 

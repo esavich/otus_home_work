@@ -2,8 +2,10 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -42,10 +44,16 @@ func ReadDir(dir string) (Environment, error) {
 		if err != nil {
 			return nil, fmt.Errorf("error opening file: %w", err)
 		}
+		defer func() {
+			err := file.Close()
+			if err != nil {
+				log.Printf("Error closing file %s: %v", file.Name(), err)
+			}
+		}()
 		reader := bufio.NewReader(file)
 
 		firstLine, err := reader.ReadString('\n')
-		if err != nil && err != io.EOF {
+		if err != nil && !errors.Is(err, io.EOF) {
 			return nil, fmt.Errorf("error reading file: %w", err)
 		}
 		firstLine = strings.TrimSuffix(firstLine, "\n")
